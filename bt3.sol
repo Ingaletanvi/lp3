@@ -1,26 +1,22 @@
-//practical 3: Write a smart contract on a test network, for Bank account of a customer for following operations: Deposit money, Withdraw Money, Show balance
-
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.26;
 
 contract BankAccount {
-    uint private balance = 3500; // Initial balance
+    mapping(address => uint) private balances; // Each user's balance
 
     // Deposit function
-    function deposit(uint x) public {
-        balance += x; // Update balance
+    function deposit(uint amount) public {
+        balances[msg.sender] += amount; // Update sender's balance
     }
 
     // Withdraw function
-    function withdraw(uint x) public {
-        if (balance < x) {
-            revert("Insufficient balance"); // Error handling
-        }
-        balance -= x; // Update balance
+    function withdraw(uint amount) public {
+        require(balances[msg.sender] >= amount, "Insufficient balance"); // Check if sender has enough balance
+        balances[msg.sender] -= amount; // Update sender's balance
     }
 
     // Show balance function
-    function show() public view returns (uint) {
-        return balance; // Return current balance
+    function showBalance() public view returns (uint) {
+        return balances[msg.sender]; // Return sender's current balance
     }
 }
